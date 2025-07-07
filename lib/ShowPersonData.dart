@@ -46,6 +46,13 @@ class _ShowpersondataState extends State<Showpersondata> {
                 ),),
                 title: Text(person.name ?? "No name"),
                 subtitle: Text(person.contact ?? "No contact"),
+                trailing: IconButton(onPressed: (){
+                  DBHelper.onDelete(person.id!.toInt());
+
+                  setState(() {
+
+                  });
+                }, icon: Icon(Icons.delete)),
               );
             },
           );

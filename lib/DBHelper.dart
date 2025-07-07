@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:szdfzf/Model/Person.dart';
@@ -13,6 +15,19 @@ class DBHelper{
   static Future _onCreate (Database db, int version) async{
      final sql= ''' create table persons(id integer primary key AUTOINCREMENT, name text, contact text) ''';
       await db.execute(sql);
+  }
+
+  static Future onDelete(int id) async {
+
+    Database db= await initDB();
+    try{
+      await db.delete("persons", where: "id=?", whereArgs: [id]);
+      DBHelper.readContact();
+
+    }catch(ex){
+      debugPrint(ex.hashCode.toString());
+    }
+
   }
 
 static Future<int> createPerson(Person person) async{

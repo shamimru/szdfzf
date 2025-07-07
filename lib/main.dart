@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:szdfzf/CameraWesome.dart';
 import 'package:szdfzf/MyCamera.dart';
 import 'package:szdfzf/MyFormData.dart';
+import 'package:szdfzf/MyLocalNotification.dart';
 import 'package:szdfzf/ShowPersonData.dart';
 
 void main() {
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: "/cameraWesome", page: () => const CameraAwesome()),
         GetPage(name: "/form", page: () => const MyFormdata()),
         GetPage(name: "/showPerson", page: () => const Showpersondata()),
+        GetPage(name: "/notification", page: () => const Mylocalnotification()),
       ],
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -93,7 +95,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(onPressed: (){
               print("formData");
               Get.toNamed("/form");
-            }, child: Text("Form Data to Sql"))
+            }, child: Text("Form Data to Sql")),
+
+            SizedBox(height: 20,),
+            ElevatedButton(onPressed: (){
+              print("formData");
+              Get.toNamed("/notification");
+            }, child: Text("Local Notification"))
           ],
         ),
       ),
