@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:szdfzf/DBHelper.dart';
+import 'package:szdfzf/FireBaseService.dart';
 import 'package:szdfzf/MySQflite.dart';
 
 import 'Model/Person.dart';
@@ -15,6 +16,7 @@ class MyFormdata extends StatefulWidget {
 }
 
 class _MyFormdataState extends State<MyFormdata> {
+  var firebaseService = FireBaseService();
 
   TextEditingController _name= TextEditingController();
   TextEditingController _contact= TextEditingController();
@@ -38,11 +40,13 @@ class _MyFormdataState extends State<MyFormdata> {
 
             ElevatedButton(onPressed: (){
 
-              DBHelper.createPerson(Person(
-                name: _name.text,
-                 contact: _contact.text
-              ));
-              Get.toNamed("/showPerson");
+              //firebase test
+              firebaseService.create(path: "data1", data: {"name":_name.text, "contact":_contact.text});
+              // DBHelper.createPerson(Person(
+              //   name: _name.text,
+              //    contact: _contact.text
+              // ));
+              Get.toNamed("/firedata");
             }, child: Text("Save"),
             ),
           ],

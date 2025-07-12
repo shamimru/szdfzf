@@ -1,12 +1,25 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:szdfzf/CameraWesome.dart';
+import 'package:szdfzf/FireBaseService.dart';
 import 'package:szdfzf/MyCamera.dart';
 import 'package:szdfzf/MyFormData.dart';
 import 'package:szdfzf/MyLocalNotification.dart';
+import 'package:szdfzf/ShowFirebaseData.dart';
 import 'package:szdfzf/ShowPersonData.dart';
+import 'package:szdfzf/firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -22,7 +35,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: "/cameraWesome", page: () => const CameraAwesome()),
         GetPage(name: "/form", page: () => const MyFormdata()),
         GetPage(name: "/showPerson", page: () => const Showpersondata()),
-        GetPage(name: "/notification", page: () => const Mylocalnotification()),
+        GetPage(name: "/firedata", page: () =>  MyFirebaseList ()),
       ],
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -101,7 +114,16 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(onPressed: (){
               print("formData");
               Get.toNamed("/notification");
-            }, child: Text("Local Notification"))
+            }, child: Text("Local Notification")
+            ),
+            SizedBox(height: 20,),
+            ElevatedButton(onPressed: ()async {
+              // DataSnapshot? snapshot = await FireBaseService().read(path: "data1");
+
+              // print(snapshot?.value);
+              Get.toNamed("/firedata");
+            }, child: Text("Show firebase Data")
+            ),
           ],
         ),
       ),
