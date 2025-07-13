@@ -1,39 +1,18 @@
-
 import 'dart:developer';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:szdfzf/NotificationUtilities.dart';
 
-import 'MyOwnNotification.dart';
-
-class Mylocalnotification extends StatefulWidget {
-  const Mylocalnotification({super.key});
+class Myownnotification extends StatefulWidget {
+  const Myownnotification({super.key});
 
   @override
-  State<Mylocalnotification> createState() => _MylocalnotificationState();
+  State<Myownnotification> createState() => _MyownnotificationState();
 }
 
-class _MylocalnotificationState extends State<Mylocalnotification> {
-  // var noti= NotificationUtilities().ini;
-
-  var check;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    check= isNotificationAllowed();
-  }
-
-  // to check access permission
-  Future<bool> isNotificationAllowed() async {
-    return await AwesomeNotifications().isNotificationAllowed();
-  }
-
-
-
+class _MyownnotificationState extends State<Myownnotification> {
   Future<void> _checkNotificationPermission() async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
     debugger();
@@ -67,30 +46,13 @@ class _MylocalnotificationState extends State<Mylocalnotification> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Notification"),
+    return InkWell(
+      child: Container(
+        child: ElevatedButton(onPressed: _checkNotificationPermission, child: Text("Get Notification")),
       ),
-
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(onPressed: () async{
-              if(await isNotificationAllowed() != true){
-                Myownnotification();
-                // _checkNotificationPermission();// check the permission before create notification
-              }
-              NotificationUtilities.createPlaneNotification();// after get permission , create Notification
-
-
-
-            }, child: Text("show Notification"))
-          ],
-        ),
-      )
     );
   }
 }
