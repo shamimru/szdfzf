@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:szdfzf/FireBaseService.dart';
 import 'package:szdfzf/MyCamera.dart';
 import 'package:szdfzf/MyFormData.dart';
 import 'package:szdfzf/MyLocalNotification.dart';
+import 'package:szdfzf/NotificationUtilities.dart';
 import 'package:szdfzf/ShowFirebaseData.dart';
 import 'package:szdfzf/ShowPersonData.dart';
 import 'package:szdfzf/firebase_options.dart';
@@ -20,22 +22,78 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await AwesomeNotifications().initialize(
+      "resource://drawable/icon_notification",
+      [
+        NotificationChannel(
+          channelKey: 'basic_channel',
+          channelName: 'Basic Notifications',
+          channelDescription: 'Notification channel for basic tests',
+          defaultColor: Colors.teal,
+          ledColor: Colors.white,
+          importance: NotificationImportance.High,
+        )
+      ]
+  );
+
+
+
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _checkNotificationPermission();
+
+  }
+
+  Future<void> _checkNotificationPermission() async{
+    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+
+    if (!isAllowed) {
+      showDialog(context: context, builder: (contex) =>
+          AlertDialog(title: Text("Allow Notification"),
+            content: Text("Our app would like to see"),
+            actions: [
+              TextButton(onPressed: (){
+                Get.back();
+              }, child: Text("Don\'t Allow")
+              ),
+              TextButton(onPressed: (){
+                AwesomeNotifications().requestPermissionToSendNotifications().then((_)=>
+                    Get.back()
+                );
+              }, child: Text("Allow")
+              ),
+            ],
+          )
+      );
+    }
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       getPages: [
         GetPage(name: "/camera", page: () => const Mycamera()),
         GetPage(name: "/cameraWesome", page: () => const CameraAwesome()),
         GetPage(name: "/form", page: () => const MyFormdata()),
         GetPage(name: "/showPerson", page: () => const Showpersondata()),
         GetPage(name: "/firedata", page: () =>  MyFirebaseList ()),
+        GetPage(name: "/notification", page: () =>  Mylocalnotification ()),
       ],
       title: 'Flutter Demo',
       theme: ThemeData(

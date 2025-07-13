@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 class FireBaseService{
 
-  final FirebaseDatabase _firebaseDatabase = FirebaseDatabase.instance;
+   static final FirebaseDatabase _firebaseDatabase = FirebaseDatabase.instance;
 
   Future <void> create ({
     required String path,

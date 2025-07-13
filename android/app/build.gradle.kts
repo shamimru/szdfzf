@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.szdfzf"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = "27.0.12077973"
 //    ndkVersion = flutter.ndkVersion
 
@@ -29,7 +29,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -42,6 +42,18 @@ android {
         }
     }
 }
+// android/build.gradle.kts
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.1.1")
+        // Add other classpaths here if needed
+    }
+}
+
 
 flutter {
     source = "../.."
