@@ -36,7 +36,7 @@ class _MylocalnotificationState extends State<Mylocalnotification> {
 
   Future<void> _checkNotificationPermission() async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-    debugger();
+    // debugger();
     if (!isAllowed) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showDialog(
@@ -80,13 +80,10 @@ class _MylocalnotificationState extends State<Mylocalnotification> {
           children: [
             ElevatedButton(onPressed: () async{
               if(await isNotificationAllowed() != true){
-                Myownnotification();
-                // _checkNotificationPermission();// check the permission before create notification
+                print("inside method ${isNotificationAllowed() != true}");
+                _checkNotificationPermission();// check the permission before create notification
               }
               NotificationUtilities.createPlaneNotification();// after get permission , create Notification
-
-
-
             }, child: Text("show Notification"))
           ],
         ),

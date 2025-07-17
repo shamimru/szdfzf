@@ -1,9 +1,12 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:szdfzf/ShowPersonData.dart';
+import 'package:szdfzf/main.dart';
 
 import 'MyLocalNotification.dart';
 
 class NotificationUtilities {
+
   var mylocalnotification = Mylocalnotification();
   static Future<void> initialize() async {
     await AwesomeNotifications()
@@ -15,11 +18,27 @@ class NotificationUtilities {
             defaultColor: Colors.teal,
             ledColor: Colors.white,
             importance: NotificationImportance.High,
+            channelShowBadge: true,
           ),
         ]);
+
+    await AwesomeNotifications().setListeners(
+        onActionReceivedMethod: onActionReceivedMethod);
   }
 
+ static Future<void> onActionReceivedMethod(ReceivedAction recivedAction)async {
+
+    final payload= recivedAction.payload ?? {};
+    if(payload["navigate"]== "true"){
+      MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
+          builder: (_)=> Showpersondata()));
+    }
+
+  }
+
+
   static Future<void> createPlaneNotification() async {
+    print("createPlaneNotification");
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: 4,
@@ -29,6 +48,7 @@ class NotificationUtilities {
         body: "Floral at 123 Main st, has 2 in shamim",
         bigPicture: 'asset://images/food1.jpg',
         notificationLayout: NotificationLayout.BigPicture,
+        payload: {'navigate': 'true'},
       ),
     );
   }

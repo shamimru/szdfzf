@@ -13,6 +13,7 @@ class Myownnotification extends StatefulWidget {
 }
 
 class _MyownnotificationState extends State<Myownnotification> {
+
   Future<void> _checkNotificationPermission() async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
     debugger();
