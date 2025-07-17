@@ -43,6 +43,7 @@ dependencies:
   firebase_core: ^3.15.1
   firebase_database:
   awesome_notifications:
+  flutter_contacts:
 
   # Choose ONE of these gallery saving packages:
   # Option 1: gallery_saver (recommended for your current code)

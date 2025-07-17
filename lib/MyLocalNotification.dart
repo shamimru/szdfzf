@@ -81,10 +81,15 @@ class _MylocalnotificationState extends State<Mylocalnotification> {
             ElevatedButton(onPressed: () async{
               if(await isNotificationAllowed() != true){
                 print("inside method ${isNotificationAllowed() != true}");
-                _checkNotificationPermission();// check the permission before create notification
+                // _checkNotificationPermission();// check the permission before create notification
+                NotificationUtilities.createPlaneNotification_2();
               }
               NotificationUtilities.createPlaneNotification();// after get permission , create Notification
-            }, child: Text("show Notification"))
+            }, child: Text("show Notification")),
+            
+            ElevatedButton(onPressed: (){
+              Get.toNamed("/getContacts");
+            }, child: Text("Get Contact List"))
           ],
         ),
       )

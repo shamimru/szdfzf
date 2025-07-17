@@ -27,7 +27,6 @@ class NotificationUtilities {
   }
 
  static Future<void> onActionReceivedMethod(ReceivedAction recivedAction)async {
-
     final payload= recivedAction.payload ?? {};
     if(payload["navigate"]== "true"){
       MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
@@ -49,14 +48,16 @@ class NotificationUtilities {
         bigPicture: 'asset://images/food1.jpg',
         notificationLayout: NotificationLayout.BigPicture,
         payload: {'navigate': 'true'},
+        chronometer:Duration.zero,
+        timeoutAfter: Duration(seconds: 10),
       ),
     );
   }
 
   static Future<void> createPlaneNotification_2() async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-
     if (!isAllowed) {
+      AwesomeNotifications().requestPermissionToSendNotifications();
       print("Notification permission not granted.");
       return; // Prevent from crashing
     }
