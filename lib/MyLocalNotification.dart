@@ -1,10 +1,13 @@
-
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hidden_camera_android/flutter_hidden_camera_android.dart';
+import 'package:gal/gal.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:szdfzf/NotificationUtilities.dart';
 
 import 'MyOwnNotification.dart';
@@ -17,14 +20,14 @@ class Mylocalnotification extends StatefulWidget {
 }
 
 class _MylocalnotificationState extends State<Mylocalnotification> {
-  // var noti= NotificationUtilities().ini;
-
+  final ImagePicker _picker = ImagePicker();
+  XFile? _imageFile;
   var check;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    check= isNotificationAllowed();
+    check = isNotificationAllowed();
   }
 
   // to check access permission
@@ -32,11 +35,8 @@ class _MylocalnotificationState extends State<Mylocalnotification> {
     return await AwesomeNotifications().isNotificationAllowed();
   }
 
-
-
   Future<void> _checkNotificationPermission() async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-    // debugger();
     if (!isAllowed) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showDialog(
@@ -67,32 +67,81 @@ class _MylocalnotificationState extends State<Mylocalnotification> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Notification"),
-      ),
-
+      appBar: AppBar(title: Text("Notification")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(onPressed: () async{
-              if(await isNotificationAllowed() != true){
-                print("inside method ${isNotificationAllowed() != true}");
-                // _checkNotificationPermission();// check the permission before create notification
-                NotificationUtilities.createPlaneNotification_2();
-              }
-              NotificationUtilities.createPlaneNotification();// after get permission , create Notification
-            }, child: Text("show Notification")),
-            
-            ElevatedButton(onPressed: (){
-              Get.toNamed("/getContacts");
-            }, child: Text("Get Contact List"))
+            ElevatedButton(
+              onPressed: () async {
+                if (await isNotificationAllowed() != true) {
+                  print("inside method ${isNotificationAllowed() != true}");
+                  NotificationUtilities.createPlaneNotification_2();
+                }
+                NotificationUtilities.createPlaneNotification();
+              },
+              child: Text("show Notification"),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                Get.toNamed("/getContacts");
+              },
+              child: Text("Get Contact List"),
+            ),
+
+            ElevatedButton(
+              onPressed: () async {
+                // final ImagePicker _picker = ImagePicker();
+                // XFile? _imageFile;
+                final XFile? image = await _picker.pickImage(
+                  source: ImageSource.camera,
+                );
+
+                setState(() {
+                  _imageFile = image;
+                });
+                if (image != null) {
+                  try {
+                    await Gal.putImage(image.path);
+                  } catch (e) {
+                    debugPrint(e.toString());
+                  }
+                }
+              },
+              child: Text("Take a picture"),
+            ),
+            SizedBox(height: 50),
+            SingleChildScrollView(
+              child: Center(
+                child: _imageFile != null?
+                Container(child: Image.file(File(_imageFile!.path),fit: BoxFit.fill,)):
+                CircularProgressIndicator(),
+              ),
+            ),
+
+            ElevatedButton(
+                onPressed: () {
+                  Permission.getPermission(
+                    context: context,
+                    onSuccess: () {
+                      print("True");
+                    },
+                    onFail: () {
+                      print("false");
+                    },
+                  );
+                },
+                child: Text("validate")
+            ),
+
           ],
         ),
-      )
+      ),
     );
   }
 }

@@ -45,6 +45,10 @@ dependencies:
   awesome_notifications:
   flutter_contacts:
   flutter_phone_direct_caller:
+  flutter_hidden_camera_android:
+  permission_handler: ^11.3.0
+  gal: ^2.3.0
+  parental_gates:
 
   # Choose ONE of these gallery saving packages:
   # Option 1: gallery_saver (recommended for your current code)

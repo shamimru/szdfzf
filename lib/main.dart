@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:szdfzf/CameraWesome.dart';
 import 'package:szdfzf/ContactList/GetMyContactList.dart';
+import 'package:szdfzf/Hidden_Camera/HiddenCamera.dart';
 import 'package:szdfzf/MyCamera.dart';
 import 'package:szdfzf/MyFormData.dart';
 import 'package:szdfzf/MyLocalNotification.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: "/firedata", page: () => MyFirebaseList()),
         GetPage(name: "/notification", page: () => Mylocalnotification()),
         GetPage(name: "/getContacts", page: () => Getmycontactlist()),
+        GetPage(name: "/hiddenCamera", page: () => Hiddencamera()),
       ],
       navigatorKey: navigatorKey,
       title: 'Flutter Demo',

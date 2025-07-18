@@ -44,63 +44,136 @@ class _GetmycontactlistState extends State<Getmycontactlist> {
               itemCount: contacts.length,
               itemBuilder: (context, index) {
                 final contact = contacts[index];
-                return ListTile(
-
-                  title: Text(contact.displayName),
-                  subtitle: Text(
-                    contact.phones.isNotEmpty
-                        ? contact.phones[0].number
-                        : 'No phone',
-                  ),
-                  leading: contact.photo != null
-                      ? CircleAvatar(
-                          backgroundImage: MemoryImage(contact.photo!),
-                        )
-                      : CircleAvatar(child: Icon(Icons.person)),
-
-                  trailing: SizedBox(
-                    width: 80,
-                    child: Container(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          right: 10
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: IconButton(onPressed: () async{
-                                await FlutterPhoneDirectCaller.callNumber(contact.phones[0].number);
-                              }, icon: Icon(Icons.call)),
-                            ),
-                            SizedBox(width: 30,),
-                            Expanded(
-                              child: Container(
-                                width: 50,
-                                child: IconButton(
-                                  onPressed: () async {
-                                    if (await FlutterContacts.requestPermission()) {
-                                      // await contacts[index].delete();
-                                      Get.snackbar("Are You Sure To Delete", "File Will be Deleted Forever");
-                                      setState(() {
-                                        contacts.removeAt(index);
-                                      });
-                                    }
-                                  },
-                                  icon: Icon(Icons.delete_forever),
+                return  Card(
+                  elevation: 10,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // === Left: Avatar + Name + Phone (tappable InkWell) ===
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
+                              await FlutterContacts.openExternalView(contact.id);
+                            },
+                            child: Row(
+                              children: [
+                                contact.photo != null
+                                    ? CircleAvatar(backgroundImage: MemoryImage(contact.photo!))
+                                    : CircleAvatar(child: Icon(Icons.person)),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        contact.displayName,
+                                        style: TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.w500),
+                                      ),
+                                      Text(
+                                        contact.phones.isNotEmpty
+                                            ? contact.phones[0].number
+                                            : 'No phone',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // === Right: Buttons ===
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.call, color: Colors.green),
+                              onPressed: () async {
+                                if (contact.phones.isNotEmpty) {
+                                  await FlutterPhoneDirectCaller.callNumber(contact.phones[0].number);
+                                }
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete_forever, color: Colors.red),
+                              onPressed: () async {
+                                if (await FlutterContacts.requestPermission()) {
+                                  await contact.delete();
+                                  setState(() {
+                                    contacts.removeAt(index);
+                                  });
+                                  Get.snackbar("Deleted", "${contact.displayName} was removed");
+                                }
+                              },
                             ),
                           ],
                         ),
-                      ),
-                    )
+                      ],
+                    ),
                   ),
                 );
+
+                //   ListTile(
+                //
+                //   title: Text(contact.displayName),
+                //   subtitle: Text(
+                //     contact.phones.isNotEmpty
+                //         ? contact.phones[0].number
+                //         : 'No phone',
+                //   ),
+                //   leading: contact.photo != null
+                //       ? CircleAvatar(
+                //           backgroundImage: MemoryImage(contact.photo!),
+                //         )
+                //       : CircleAvatar(child: Icon(Icons.person)),
+                //
+                //   trailing: SizedBox(
+                //     width: 80,
+                //     child: Container(
+                //       child: Padding(
+                //         padding: EdgeInsets.only(
+                //           right: 10
+                //         ),
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             Expanded(
+                //               child: IconButton(onPressed: () async{
+                //                 await FlutterPhoneDirectCaller.callNumber(contact.phones[0].number);
+                //               }, icon: Icon(Icons.call)),
+                //             ),
+                //             SizedBox(width: 30,),
+                //             Expanded(
+                //               child: Container(
+                //                 width: 50,
+                //                 child: IconButton(
+                //                   onPressed: () async {
+                //                     if (await FlutterContacts.requestPermission()) {
+                //                       // await contacts[index].delete();
+                //                       Get.snackbar("Are You Sure To Delete", "File Will be Deleted Forever");
+                //                       setState(() {
+                //                         contacts.removeAt(index);
+                //                       });
+                //                     }
+                //                   },
+                //                   icon: Icon(Icons.delete_forever),
+                //                 ),
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     )
+                //   ),
+                // );
               },
             ),
 
-      floatingActionButton: IconButton(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
         onPressed: () {
           Get.bottomSheet(
             Container(
@@ -178,7 +251,8 @@ class _GetmycontactlistState extends State<Getmycontactlist> {
             ),
           );
         },
-        icon: Icon(Icons.add, size: 30),
+
+        child: Icon(Icons.add, color: Colors.white,),
       ),
     );
   }
