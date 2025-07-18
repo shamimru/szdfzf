@@ -44,6 +44,7 @@ dependencies:
   firebase_database:
   awesome_notifications:
   flutter_contacts:
+  flutter_phone_direct_caller:
 
   # Choose ONE of these gallery saving packages:
   # Option 1: gallery_saver (recommended for your current code)

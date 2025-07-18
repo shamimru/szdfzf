@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class Getmycontactlist extends StatefulWidget {
   @override
@@ -7,6 +10,8 @@ class Getmycontactlist extends StatefulWidget {
 }
 
 class _GetmycontactlistState extends State<Getmycontactlist> {
+  TextEditingController _name = TextEditingController();
+  TextEditingController _contact = TextEditingController();
   List<Contact> contacts = [];
 
   @override
@@ -36,17 +41,144 @@ class _GetmycontactlistState extends State<Getmycontactlist> {
       body: contacts.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
-        itemCount: contacts.length,
-        itemBuilder: (context, index) {
-          final contact = contacts[index];
-          return ListTile(
-            title: Text(contact.displayName),
-            subtitle: Text(contact.phones.isNotEmpty ? contact.phones[0].number : 'No phone'),
-            leading: contact.photo != null
-                ? CircleAvatar(backgroundImage: MemoryImage(contact.photo!))
-                : CircleAvatar(child: Icon(Icons.person)),
+              itemCount: contacts.length,
+              itemBuilder: (context, index) {
+                final contact = contacts[index];
+                return ListTile(
+
+                  title: Text(contact.displayName),
+                  subtitle: Text(
+                    contact.phones.isNotEmpty
+                        ? contact.phones[0].number
+                        : 'No phone',
+                  ),
+                  leading: contact.photo != null
+                      ? CircleAvatar(
+                          backgroundImage: MemoryImage(contact.photo!),
+                        )
+                      : CircleAvatar(child: Icon(Icons.person)),
+
+                  trailing: SizedBox(
+                    width: 80,
+                    child: Container(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          right: 10
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: IconButton(onPressed: () async{
+                                await FlutterPhoneDirectCaller.callNumber(contact.phones[0].number);
+                              }, icon: Icon(Icons.call)),
+                            ),
+                            SizedBox(width: 30,),
+                            Expanded(
+                              child: Container(
+                                width: 50,
+                                child: IconButton(
+                                  onPressed: () async {
+                                    if (await FlutterContacts.requestPermission()) {
+                                      // await contacts[index].delete();
+                                      Get.snackbar("Are You Sure To Delete", "File Will be Deleted Forever");
+                                      setState(() {
+                                        contacts.removeAt(index);
+                                      });
+                                    }
+                                  },
+                                  icon: Icon(Icons.delete_forever),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ),
+                );
+              },
+            ),
+
+      floatingActionButton: IconButton(
+        onPressed: () {
+          Get.bottomSheet(
+            Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize:
+                      MainAxisSize.min, // this ensures it takes minimum space
+                  children: <Widget>[
+                    Text("Insert New Contact"),
+
+                    TextField(
+                      controller: _name,
+                      decoration: InputDecoration(
+                        labelText: 'Username',
+                        hintText: 'Please enter your username',
+                        prefixIcon: Icon(Icons.person),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: _contact,
+                      decoration: InputDecoration(
+                        labelText: 'Contact',
+                        hintText: 'Please enter your Contact',
+                        prefixIcon: Icon(Icons.contacts),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          child: Text("Close"),
+                          onPressed: () => Get.back(),
+                        ),
+
+                        TextButton(
+                          onPressed: () async {
+                            if (await FlutterContacts.requestPermission()) {
+                              if (_name.text.isEmpty || _contact.text.isEmpty) {
+                                Get.snackbar(
+                                  'Error',
+                                  'Name and contact number are required',
+                                );
+                                return;
+                              }
+                              final newContact = Contact()
+                                ..name = Name(first: _name.text)
+                                ..phones = [Phone(_contact.text)];
+                              await newContact.insert();
+                              Get.snackbar('Success', 'Contact saved');
+                              getContactList();
+                              Get.back();
+                            };
+                          },
+                          child: Text("Save"),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           );
         },
+        icon: Icon(Icons.add, size: 30),
       ),
     );
   }
